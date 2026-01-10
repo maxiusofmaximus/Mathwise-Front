@@ -23,6 +23,7 @@ export default function TakeQuizPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
   useEffect(() => {
     if (quizId) {
@@ -30,16 +31,48 @@ export default function TakeQuizPage() {
     }
   }, [quizId]);
 
+  useEffect(() => {
+    if (timeLeft === null) return;
+    
+    if (timeLeft <= 0) {
+      handleAutoSubmit();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
   const fetchQuiz = async () => {
     try {
       const response = await api.get(`/quiz/${quizId}`);
       setQuiz(response.data);
+      
+      // Calculate Time Limit
+      const limit = response.data.time_limit || (response.data.questions.length * 90);
+      setTimeLeft(limit);
+      
     } catch (error) {
       console.error(error);
       toast.error(commonT.error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAutoSubmit = () => {
+    if (submitting) return;
+    toast.info("Time's up! Submitting automatically...");
+    handleSubmit();
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleAnswerChange = (questionId: string, value: string) => {
@@ -83,7 +116,15 @@ export default function TakeQuizPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 p-8 items-center">
-      <div className="w-full max-w-3xl space-y-6">
+      
+      {/* Timer Header */}
+      <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-full font-mono font-bold text-xl shadow-lg ${
+        (timeLeft || 0) < 60 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400'
+      }`}>
+        {timeLeft !== null ? formatTime(timeLeft) : '--:--'}
+      </div>
+
+      <div className="w-full max-w-3xl space-y-6 pt-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold dark:text-gray-100">{quiz.title}</h1>
           <p className="text-gray-600 dark:text-gray-400">{quiz.description}</p>

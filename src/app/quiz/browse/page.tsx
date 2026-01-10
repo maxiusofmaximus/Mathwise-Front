@@ -57,6 +57,11 @@ export default function BrowseQuizzesPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">{quiz.description || "No description provided."}</p>
+                {quiz.end_at && (
+                  <p className="text-xs text-red-500 mb-2 font-medium">
+                    Deadline: {new Date(quiz.end_at).toLocaleString()}
+                  </p>
+                )}
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded">
                     {quiz.difficulty || "Medium"}
