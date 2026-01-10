@@ -85,28 +85,29 @@ export default function TakeQuizPage() {
   if (!quiz) return <div className="flex justify-center items-center min-h-screen">Quiz not found</div>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 p-8 items-center">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 p-8 items-center">
       <div className="w-full max-w-3xl space-y-6">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">{quiz.title}</h1>
-          <p className="text-gray-600">{quiz.description}</p>
+          <h1 className="text-3xl font-bold dark:text-gray-100">{quiz.title}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{quiz.description}</p>
         </div>
 
         {quiz.questions.map((question: any, index: number) => (
-          <Card key={question.id}>
+          <Card key={question.id} className="dark:bg-gray-900 dark:border-gray-800">
             <CardHeader>
-              <CardTitle className="text-lg">Question {index + 1}</CardTitle>
+              <CardTitle className="text-lg dark:text-gray-200">Question {index + 1}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="font-medium text-gray-800">{question.content}</p>
+              <p className="font-medium text-gray-800 dark:text-gray-300">{question.content}</p>
               
               <div className="space-y-2">
-                <Label htmlFor={question.id}>Your Answer</Label>
+                <Label htmlFor={question.id} className="dark:text-gray-400">Your Answer</Label>
                 <Input
                   id={question.id}
                   placeholder="Type your answer here..."
                   value={answers[question.id] || ""}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
             </CardContent>

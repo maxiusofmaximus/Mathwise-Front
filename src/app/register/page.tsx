@@ -34,70 +34,81 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Register</CardTitle>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950 p-4">
+      <Card className="w-full max-w-md dark:bg-gray-900 dark:border-gray-800">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center dark:text-gray-100">Create an account</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="dark:text-gray-300">Full Name</Label>
               <Input
                 id="name"
+                placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="dark:text-gray-300">Email</Label>
               <Input
                 id="email"
                 type="email"
+                placeholder="email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="dark:text-gray-300">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
             <div className="space-y-2">
-              <Label>Role</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    value="student"
-                    checked={role === 'student'}
-                    onChange={() => setRole('student')}
-                    className="form-radio"
-                  />
-                  <span>Student</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    value="editor"
-                    checked={role === 'editor'}
-                    onChange={() => setRole('editor')}
-                    className="form-radio"
-                  />
-                  <span>Editor (Professor)</span>
-                </label>
+              <Label className="dark:text-gray-300">Role</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  type="button"
+                  variant={role === 'student' ? 'default' : 'outline'}
+                  onClick={() => setRole('student')}
+                  className={role === 'student' ? '' : 'dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'}
+                >
+                  Student
+                </Button>
+                <Button
+                  type="button"
+                  variant={role === 'editor' ? 'default' : 'outline'}
+                  onClick={() => setRole('editor')}
+                  className={role === 'editor' ? '' : 'dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800'}
+                >
+                  Editor (Professor)
+                </Button>
               </div>
             </div>
             <Button type="submit" className="w-full">
-              Register
+              Create account
             </Button>
+            <div className="text-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400">Already have an account? </span>
+              <Button
+                variant="link"
+                className="p-0 h-auto font-normal"
+                onClick={() => router.push('/login')}
+              >
+                Login
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

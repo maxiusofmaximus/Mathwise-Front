@@ -32,15 +32,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <Card className="w-full max-w-md dark:bg-gray-900 dark:border-gray-800">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Login</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold dark:text-gray-100">Login</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="dark:text-gray-300">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -48,16 +48,18 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="dark:text-gray-300">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
             <Button type="submit" className="w-full">
