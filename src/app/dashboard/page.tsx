@@ -47,7 +47,7 @@ export default function DashboardPage() {
             <div className="rounded-lg bg-white p-6 shadow">
               <h2 className="mb-4 text-xl font-semibold">Available Quizzes</h2>
               <p className="mb-4 text-gray-600">Browse and solve assigned quizzes.</p>
-              <Button>Browse Quizzes</Button>
+              <Button onClick={() => router.push('/quiz/browse')}>Browse Quizzes</Button>
             </div>
             <div className="rounded-lg bg-white p-6 shadow">
               <h2 className="mb-4 text-xl font-semibold">My History</h2>
