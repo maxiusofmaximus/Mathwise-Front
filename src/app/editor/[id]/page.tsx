@@ -63,6 +63,8 @@ export default function EditQuizPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!params || !params.id) return; // Safety check
+
       try {
         const [quizRes, selectionRes] = await Promise.all([
             api.get(`/quiz/${params.id}`),
@@ -70,11 +72,15 @@ export default function EditQuizPage() {
         ]);
 
         // Set Selection Data
-        setAvailableStudents(selectionRes.data.students);
-        setAvailableGroups(selectionRes.data.groups);
+        if (selectionRes.data) {
+            setAvailableStudents(selectionRes.data.students || []);
+            setAvailableGroups(selectionRes.data.groups || []);
+        }
 
         // Set Quiz Data
         const data = quizRes.data;
+        if (!data) throw new Error("No quiz data received");
+
         setTitle(data.title);
         setDescription(data.description || "");
         setIsPublished(data.is_published);
@@ -89,12 +95,10 @@ export default function EditQuizPage() {
 
         setAssignToAll(data.assign_to_all);
         
-        // TODO: Backend should return these IDs in the quiz response
-        // Assuming data.allowed_students = [{id: "..."}]
         if (data.allowed_students) setSelectedStudents(data.allowed_students.map((s:any) => s.id));
         if (data.allowed_groups) setSelectedGroups(data.allowed_groups.map((g:any) => g.id));
         
-        const parsedQuestions = data.questions.map((q: any) => {
+        const parsedQuestions = (data.questions || []).map((q: any) => {
             let options: string[] = [];
             let keywords: string[] = [];
             

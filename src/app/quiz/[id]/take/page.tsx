@@ -47,12 +47,17 @@ export default function TakeQuizPage() {
   }, [timeLeft]);
 
   const fetchQuiz = async () => {
+    if (!quizId) return;
     try {
       const response = await api.get(`/quiz/${quizId}`);
+      if (!response.data) throw new Error("Quiz data not found");
+      
       setQuiz(response.data);
       
       // Calculate Time Limit
-      const limit = response.data.time_limit || (response.data.questions.length * 90);
+      // Ensure questions exist before accessing length
+      const questionsCount = response.data.questions?.length || 0;
+      const limit = response.data.time_limit || (questionsCount * 90);
       setTimeLeft(limit);
       
     } catch (error) {
