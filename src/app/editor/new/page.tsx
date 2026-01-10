@@ -73,9 +73,13 @@ export default function CreateQuizPage() {
 
       setQuestions([...questions, formattedQuestion]);
       toast.success(commonT.success);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error(commonT.error);
+      if (error.response?.status === 500) {
+        toast.error("AI Generation failed. Try a simpler topic or specific concept.");
+      } else {
+        toast.error(commonT.error);
+      }
     } finally {
       setAiLoading(false);
     }
@@ -208,6 +212,9 @@ export default function CreateQuizPage() {
               {/* AI Section */}
               <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
                 <Label className="text-blue-800 dark:text-blue-300 font-semibold">{t.aiAssistant}</Label>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mb-2">
+                  Enter a specific math topic (e.g. "Linear equations"). The AI generates one question at a time.
+                </p>
                 <div className="flex gap-2">
                   <Input
                     value={topic}
