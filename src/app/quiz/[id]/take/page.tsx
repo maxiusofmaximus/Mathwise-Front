@@ -8,11 +8,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useLanguageStore } from "@/store/language";
+import { translations } from "@/lib/translations";
 
 export default function TakeQuizPage() {
   const params = useParams();
   const router = useRouter();
   const quizId = params?.id as string;
+  const { language } = useLanguageStore();
+  const t = translations[language].quiz;
+  const commonT = translations[language].common;
 
   const [quiz, setQuiz] = useState<any>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -31,7 +36,7 @@ export default function TakeQuizPage() {
       setQuiz(response.data);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load quiz");
+      toast.error(commonT.error);
     } finally {
       setLoading(false);
     }
@@ -47,22 +52,15 @@ export default function TakeQuizPage() {
   const handleSubmit = async () => {
     if (!quiz) return;
 
-    // Validate that all questions are answered
     const unanswered = quiz.questions.some((q: any) => !answers[q.id]);
     if (unanswered) {
-      toast.warning("Please answer all questions before submitting.");
+      toast.warning("Please answer all questions before submitting."); // Could be translated too
       return;
     }
 
     setSubmitting(true);
     try {
-      // We need to implement this endpoint in backend or use existing attempt structure
-      // For now, let's assume /quiz/submit exists or we adapt
-      // Based on schema, we create an Attempt and AttemptAnswers
-      
-      const response = await api.post("/ai/evaluate", { // Using AI evaluation directly for now or a dedicated submit endpoint
-         // This part needs Backend alignment. Ideally: POST /quiz/:id/submit
-         // For MVP, we will simulate submission or assume endpoint creation in next step
+      const response = await api.post("/ai/evaluate", {
          quizId,
          answers: Object.entries(answers).map(([questionId, userAnswer]) => ({
            questionId,
@@ -70,19 +68,18 @@ export default function TakeQuizPage() {
          }))
       });
 
-      toast.success("Quiz submitted successfully!");
-      // Redirect to results page (to be implemented)
+      toast.success(commonT.success);
       router.push(`/quiz/${quizId}/result?attemptId=${response.data.attemptId || 'new'}`);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to submit quiz");
+      toast.error(commonT.error);
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center min-h-screen">Loading quiz...</div>;
-  if (!quiz) return <div className="flex justify-center items-center min-h-screen">Quiz not found</div>;
+  if (loading) return <div className="flex justify-center items-center min-h-screen dark:bg-gray-950 dark:text-gray-100">{commonT.loading}</div>;
+  if (!quiz) return <div className="flex justify-center items-center min-h-screen dark:bg-gray-950 dark:text-gray-100">Quiz not found</div>;
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 p-8 items-center">
@@ -95,16 +92,16 @@ export default function TakeQuizPage() {
         {quiz.questions.map((question: any, index: number) => (
           <Card key={question.id} className="dark:bg-gray-900 dark:border-gray-800">
             <CardHeader>
-              <CardTitle className="text-lg dark:text-gray-200">Question {index + 1}</CardTitle>
+              <CardTitle className="text-lg dark:text-gray-200">{commonT.language === 'Idioma' ? 'Pregunta' : 'Question'} {index + 1}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="font-medium text-gray-800 dark:text-gray-300">{question.content}</p>
               
               <div className="space-y-2">
-                <Label htmlFor={question.id} className="dark:text-gray-400">Your Answer</Label>
+                <Label htmlFor={question.id} className="dark:text-gray-400">{t.yourAnswer}</Label>
                 <Input
                   id={question.id}
-                  placeholder="Type your answer here..."
+                  placeholder={t.answerPlaceholder}
                   value={answers[question.id] || ""}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
@@ -119,7 +116,7 @@ export default function TakeQuizPage() {
           onClick={handleSubmit}
           disabled={submitting}
         >
-          {submitting ? "Submitting..." : "Submit Quiz"}
+          {submitting ? t.submitting : t.submit}
         </Button>
       </div>
     </div>

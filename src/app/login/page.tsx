@@ -9,38 +9,51 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useLanguageStore } from '@/store/language';
+import { translations } from '@/lib/translations';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { setToken, setUser } = useAuthStore();
+  const { language } = useLanguageStore();
+  const t = translations[language].auth;
+  const commonT = translations[language].common;
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
-  const login = useAuthStore((state) => state.login);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      const res = await api.post('/auth/login', { email, password });
-      login(res.data.user, res.data.access_token);
-      localStorage.setItem('token', res.data.access_token);
-      toast.success('Login successful');
+      const response = await api.post('/auth/login', { email, password });
+      const { access_token, user } = response.data;
+      
+      setToken(access_token);
+      setUser(user);
+      
+      toast.success(commonT.success);
       router.push('/dashboard');
     } catch (error: any) {
-      toast.error('Login failed', {
-        description: error.response?.data?.message || 'Invalid credentials',
-      });
+      console.error(error);
+      toast.error(error.response?.data?.message || commonT.error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950 p-4">
       <Card className="w-full max-w-md dark:bg-gray-900 dark:border-gray-800">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold dark:text-gray-100">Login</CardTitle>
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center dark:text-gray-100">{t.loginTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="dark:text-gray-300">Email</Label>
+              <Label htmlFor="email" className="dark:text-gray-300">{t.email}</Label>
               <Input
                 id="email"
                 type="email"
@@ -52,7 +65,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="dark:text-gray-300">Password</Label>
+              <Label htmlFor="password" className="dark:text-gray-300">{t.password}</Label>
               <Input
                 id="password"
                 type="password"
@@ -62,9 +75,19 @@ export default function LoginPage() {
                 className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
               />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? t.loggingIn : t.loginButton}
             </Button>
+            <div className="text-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400">{t.noAccount} </span>
+              <Button
+                variant="link"
+                className="p-0 h-auto font-normal"
+                onClick={() => router.push('/register')}
+              >
+                {t.signUp}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

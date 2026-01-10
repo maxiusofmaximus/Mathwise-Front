@@ -7,17 +7,26 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { GoogleTranslate } from "./GoogleTranslate";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useLanguageStore } from "@/store/language";
+import { translations } from "@/lib/translations";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function SettingsMenu() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { setTheme, theme } = useTheme();
+  const { language, setLanguage } = useLanguageStore();
+  const t = translations[language].common;
 
   if (!user) return null;
 
@@ -40,7 +49,7 @@ export function SettingsMenu() {
       <PopoverContent className="w-80 mr-4 mt-2 p-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl border-gray-200 dark:border-gray-800" align="end">
         <div className="space-y-4">
           <div className="flex items-center justify-between border-b dark:border-gray-700 pb-2">
-            <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100">Settings</h4>
+            <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100">{t.settings}</h4>
             <span className="text-xs text-gray-500 dark:text-gray-400">{user.email}</span>
           </div>
 
@@ -48,20 +57,36 @@ export function SettingsMenu() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               <Globe className="h-4 w-4" />
-              <span>Language</span>
+              <span>{t.language}</span>
             </div>
-            <GoogleTranslate />
-            <p className="text-xs text-gray-400">Powered by Google Translate</p>
+            <div className="flex gap-2">
+              <Button 
+                variant={language === 'en' ? "default" : "outline"} 
+                size="sm" 
+                className="flex-1"
+                onClick={() => setLanguage('en')}
+              >
+                English
+              </Button>
+              <Button 
+                variant={language === 'es' ? "default" : "outline"} 
+                size="sm" 
+                className="flex-1"
+                onClick={() => setLanguage('es')}
+              >
+                Español
+              </Button>
+            </div>
           </div>
 
           {/* Theme Section */}
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-              <span>Theme</span>
+              <span>{t.theme}</span>
             </div>
             <Button variant="outline" size="sm" onClick={toggleTheme}>
-              {theme === "dark" ? "Dark" : "Light"}
+              {theme === "dark" ? t.dark : t.light}
             </Button>
           </div>
 
@@ -73,7 +98,7 @@ export function SettingsMenu() {
               onClick={handleLogout}
             >
               <LogOut className="h-4 w-4" />
-              Logout
+              {t.logout}
             </Button>
           </div>
         </div>
