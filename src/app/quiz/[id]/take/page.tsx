@@ -98,14 +98,51 @@ export default function TakeQuizPage() {
               <p className="font-medium text-gray-800 dark:text-gray-300">{question.content}</p>
               
               <div className="space-y-2">
-                <Label htmlFor={question.id} className="dark:text-gray-400">{t.yourAnswer}</Label>
-                <Input
-                  id={question.id}
-                  placeholder={t.answerPlaceholder}
-                  value={answers[question.id] || ""}
-                  onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                />
+                <Label htmlFor={question.id} className="dark:text-gray-400 mb-2 block">{t.yourAnswer}</Label>
+                
+                {question.type === 'multiple_choice' && question.options ? (
+                  <div className="space-y-3">
+                    {question.options.map((option: string, idx: number) => (
+                      <div key={idx} className="flex items-center space-x-2 p-3 rounded-md border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={() => handleAnswerChange(question.id, option)}>
+                        <input
+                          type="radio"
+                          id={`${question.id}-${idx}`}
+                          name={question.id}
+                          value={option}
+                          checked={answers[question.id] === option}
+                          onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <Label htmlFor={`${question.id}-${idx}`} className="dark:text-gray-300 cursor-pointer flex-grow">{option}</Label>
+                      </div>
+                    ))}
+                  </div>
+                ) : question.type === 'true_false' ? (
+                  <div className="flex gap-4">
+                    <Button
+                      variant={answers[question.id] === 'True' ? "default" : "outline"}
+                      onClick={() => handleAnswerChange(question.id, 'True')}
+                      className="flex-1 dark:text-gray-100 dark:border-gray-600"
+                    >
+                      True
+                    </Button>
+                    <Button
+                      variant={answers[question.id] === 'False' ? "default" : "outline"}
+                      onClick={() => handleAnswerChange(question.id, 'False')}
+                      className="flex-1 dark:text-gray-100 dark:border-gray-600"
+                    >
+                      False
+                    </Button>
+                  </div>
+                ) : (
+                  <Input
+                    id={question.id}
+                    placeholder={t.answerPlaceholder}
+                    value={answers[question.id] || ""}
+                    onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                  />
+                )}
               </div>
             </CardContent>
           </Card>
