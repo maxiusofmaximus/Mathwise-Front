@@ -38,7 +38,7 @@ export function SettingsMenu() {
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="fixed top-4 right-4 z-50 rounded-full bg-white/80 shadow-md hover:bg-white backdrop-blur-sm">
           <Settings className="h-5 w-5 text-gray-700" />
-        </PopoverTrigger>
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 mr-4 mt-2 p-4 bg-white/95 backdrop-blur-md shadow-xl border-gray-200" align="end">
         <div className="space-y-4">
