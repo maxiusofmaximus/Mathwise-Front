@@ -61,6 +61,9 @@ export function GoogleTranslate() {
           border: 1px solid #e2e8f0;
           width: 100%;
           cursor: pointer;
+          /* Reset Tailwind's transparent background/inherit color for selects */
+          background-color: white;
+          color: #374151; /* gray-700 */
         }
         /* Hide the "Powered by Google" text */
         .goog-te-gadget > span {
