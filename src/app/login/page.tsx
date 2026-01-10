@@ -14,7 +14,7 @@ import { translations } from '@/lib/translations';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setToken, setUser } = useAuthStore();
+  const { login } = useAuthStore();
   const { language } = useLanguageStore();
   const t = translations[language].auth;
   const commonT = translations[language].common;
@@ -31,8 +31,7 @@ export default function LoginPage() {
       const response = await api.post('/auth/login', { email, password });
       const { access_token, user } = response.data;
       
-      setToken(access_token);
-      setUser(user);
+      login(user, access_token);
       
       toast.success(commonT.success);
       router.push('/dashboard');
