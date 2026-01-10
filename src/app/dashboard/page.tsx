@@ -23,9 +23,7 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold">
           Welcome, {user.name} ({user.role})
         </h1>
-        <Button onClick={() => { logout(); router.push('/login'); }} variant="outline">
-          Logout
-        </Button>
+        {/* Logout moved to Settings Menu */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
