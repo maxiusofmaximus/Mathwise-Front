@@ -1,12 +1,5 @@
 "use client";
 
-import { Settings, LogOut, Globe, Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
