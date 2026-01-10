@@ -38,6 +38,7 @@ export default function CreateQuizPage() {
 
   // Question Creation State
   const [questionType, setQuestionType] = useState<QuestionType>('open');
+  const [generateMode, setGenerateMode] = useState<'single' | 'exam'>('single');
   const [topic, setTopic] = useState(""); // For AI
   
   // Manual Entry State
@@ -54,24 +55,36 @@ export default function CreateQuizPage() {
 
     setAiLoading(true);
     try {
+      const count = generateMode === 'exam' ? 5 : 1;
       const response = await api.post("/ai/generate", {
         topic,
         difficulty: "medium",
         question_type: questionType,
+        count,
       });
 
-      const newQuestion = response.data;
-      
-      // Ensure the AI response matches our structure
-      const formattedQuestion: Question = {
-        content: newQuestion.content,
-        expected_answer: newQuestion.expected_answer,
-        type: questionType, 
-        keywords: newQuestion.keywords || [],
-        options: newQuestion.options || [] // AI should return options for MC
-      };
+      const data = response.data;
+      let newQuestions: Question[] = [];
 
-      setQuestions([...questions, formattedQuestion]);
+      if (Array.isArray(data)) {
+        newQuestions = data.map((q: any) => ({
+          content: q.content,
+          expected_answer: q.expected_answer,
+          type: questionType,
+          keywords: q.keywords || [],
+          options: q.options || []
+        }));
+      } else {
+        newQuestions = [{
+          content: data.content,
+          expected_answer: data.expected_answer,
+          type: questionType, 
+          keywords: data.keywords || [],
+          options: data.options || [] 
+        }];
+      }
+
+      setQuestions([...questions, ...newQuestions]);
       toast.success(commonT.success);
     } catch (error: any) {
       console.error(error);
@@ -210,10 +223,31 @@ export default function CreateQuizPage() {
               </div>
 
               {/* AI Section */}
-              <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                <Label className="text-blue-800 dark:text-blue-300 font-semibold">{t.aiAssistant}</Label>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mb-2">
-                  Enter a specific math topic (e.g. "Linear equations"). The AI generates one question at a time.
+              <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                <div className="flex justify-between items-center">
+                  <Label className="text-blue-800 dark:text-blue-300 font-semibold">{t.aiAssistant}</Label>
+                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-md border dark:border-gray-700">
+                    <button
+                      type="button"
+                      onClick={() => setGenerateMode('single')}
+                      className={`text-xs px-2 py-1 rounded transition-colors ${generateMode === 'single' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 font-medium' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                    >
+                      Single
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGenerateMode('exam')}
+                      className={`text-xs px-2 py-1 rounded transition-colors ${generateMode === 'exam' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 font-medium' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}
+                    >
+                      Full Exam (5)
+                    </button>
+                  </div>
+                </div>
+                
+                <p className="text-xs text-blue-600 dark:text-blue-400">
+                  {generateMode === 'single' 
+                    ? 'Generates one question focused on the topic.' 
+                    : 'Generates 5 distinct questions to create a full quiz.'}
                 </p>
                 <div className="flex gap-2">
                   <Input
