@@ -49,7 +49,20 @@ export function GoogleTranslate() {
         }
         body {
           top: 0px !important;
+          position: static !important;
         }
+        /* Hide the Google tooltip on hover */
+        .goog-tooltip {
+          display: none !important;
+        }
+        .goog-tooltip:hover {
+          display: none !important;
+        }
+        .goog-text-highlight {
+          background-color: transparent !important;
+          box-shadow: none !important;
+        }
+        
         /* Style the gadget a bit */
         .goog-te-gadget {
           font-family: inherit !important;
