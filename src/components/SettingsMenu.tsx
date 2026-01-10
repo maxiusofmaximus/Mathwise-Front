@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { 
-  Settings, Globe, Moon, Sun, LogOut, 
+  Settings, Globe, Moon, SunMedium, LogOut, 
   Type, Eye, ZapOff 
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -116,7 +116,7 @@ export function SettingsMenu() {
           {/* Theme Section */}
           <div className="flex items-center justify-between py-2 border-b dark:border-gray-700">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              {theme === "dark" ? <Moon className="h-4 w-4" /> : <SunMedium className="h-4 w-4" />}
               <span>{t.theme}</span>
             </div>
             <Button variant="outline" size="sm" onClick={toggleTheme}>
