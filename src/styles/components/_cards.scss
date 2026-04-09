@@ -1,0 +1,3 @@
+@use "../abstracts/mixins" as *;
+
+[data-slot="card"] { @include card-surface; }

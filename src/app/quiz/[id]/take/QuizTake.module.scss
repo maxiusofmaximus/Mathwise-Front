@@ -1,0 +1,53 @@
+.page {
+  min-height: 100vh;
+  padding: 2rem;
+  display: grid;
+  place-items: center;
+}
+
+.shell {
+  width: min(100%, 54rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.header {
+  text-align: center;
+}
+
+.timer {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  font-weight: 700;
+}
+
+.timerDanger {
+  background: color-mix(in oklab, var(--error-color) 14%, var(--surface));
+  color: var(--error-color);
+}
+
+.questionBody {
+  display: grid;
+  gap: 1rem;
+}
+
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+}

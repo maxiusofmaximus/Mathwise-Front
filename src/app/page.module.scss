@@ -1,0 +1,24 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.title {
+  color: var(--primary-color);
+}
+
+.subtitle {
+  color: var(--muted-color);
+  max-width: 40rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}

@@ -1,0 +1,39 @@
+.page {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+}
+
+.title {
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.levelBadge {
+  background: color-mix(in oklab, var(--surface) 80%, var(--primary-color) 20%);
+  color: var(--text-color);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+.deadline {
+  color: var(--error-color);
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

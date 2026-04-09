@@ -1,0 +1,8 @@
+@use "variables" as *;
+
+@function theme-color($name, $dark: false) {
+  @if $dark {
+    @return map-get($theme-dark, $name);
+  }
+  @return map-get($theme-light, $name);
+}

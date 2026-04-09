@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
+import { notify } from '@/lib/notify';
 import { useLanguageStore } from "@/store/language";
 import { translations } from "@/lib/translations";
 import { Plus, Trash2 } from "lucide-react";
+import styles from "./EditorNew.module.scss";
 
 type QuestionType = 'open' | 'multiple_choice' | 'true_false';
 
@@ -49,7 +50,7 @@ export default function CreateQuizPage() {
 
   const handleGenerateAI = async () => {
     if (!topic) {
-      toast.error(commonT.error);
+      notify.error(commonT.error);
       return;
     }
 
@@ -85,13 +86,13 @@ export default function CreateQuizPage() {
       }
 
       setQuestions([...questions, ...newQuestions]);
-      toast.success(commonT.success);
+      notify.success(commonT.success);
     } catch (error: any) {
       console.error(error);
       if (error.response?.status === 500) {
-        toast.error("AI Generation failed. Try a simpler topic or specific concept.");
+        notify.error("AI Generation failed. Try a simpler topic or specific concept.");
       } else {
-        toast.error(commonT.error);
+        notify.error(commonT.error);
       }
     } finally {
       setAiLoading(false);
@@ -100,7 +101,7 @@ export default function CreateQuizPage() {
 
   const handleAddManual = () => {
     if (!manualContent) {
-      toast.error("Question content is required");
+      notify.error("Question content is required");
       return;
     }
 
@@ -112,13 +113,13 @@ export default function CreateQuizPage() {
 
     if (questionType === 'open') {
       if (!manualAnswer) {
-        toast.error("Expected answer is required");
+        notify.error("Expected answer is required");
         return;
       }
       newQuestion.expected_answer = manualAnswer;
     } else if (questionType === 'multiple_choice') {
       if (manualOptions.some(opt => !opt)) {
-        toast.error("All 4 options are required");
+        notify.error("All 4 options are required");
         return;
       }
       newQuestion.options = [...manualOptions];
@@ -139,7 +140,7 @@ export default function CreateQuizPage() {
     setManualAnswer("");
     setManualOptions(['', '', '', '']);
     setManualCorrectOption(0);
-    toast.success(t.addQuestion);
+    notify.success(t.addQuestion);
   };
 
   const removeQuestion = (idx: number) => {
@@ -151,7 +152,7 @@ export default function CreateQuizPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || questions.length === 0) {
-      toast.error(commonT.error);
+      notify.error(commonT.error);
       return;
     }
 
@@ -161,57 +162,55 @@ export default function CreateQuizPage() {
         title,
         description,
         questions,
+        is_published: true,
       });
-      toast.success(commonT.success);
+      notify.success(commonT.success);
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error(commonT.error);
+      notify.error(commonT.error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen justify-center bg-gray-50 dark:bg-gray-950 p-4 pt-8">
-      <Card className="w-full max-w-4xl dark:bg-gray-900 dark:border-gray-800">
+    <div className={styles.page}>
+      <Card className={styles.card}>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold dark:text-gray-100">{t.createTitle}</CardTitle>
+          <CardTitle>{t.createTitle}</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className={styles.form}>
             {/* Basic Info */}
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="dark:text-gray-300">{t.titleLabel}</Label>
+            <div className={styles.section}>
+              <div className={styles.section}>
+                <Label htmlFor="title">{t.titleLabel}</Label>
                 <Input
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={t.titlePlaceholder}
                   required
-                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description" className="dark:text-gray-300">{t.descLabel}</Label>
+              <div className={styles.section}>
+                <Label htmlFor="description">{t.descLabel}</Label>
                 <Input
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t.descPlaceholder}
-                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
             </div>
 
             {/* Question Creator */}
-            <div className="rounded-lg border p-6 bg-white dark:bg-gray-800/40 dark:border-gray-700 space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg dark:text-gray-100">{t.addQuestion}</h3>
-                <div className="flex gap-2">
+            <div className={`${styles.panel} ${styles.section}`}>
+              <div className={styles.row}>
+                <h3>{t.addQuestion}</h3>
+                <div className={styles.row}>
                   <select 
-                    className="p-2 rounded border dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                     value={questionType}
                     onChange={(e) => setQuestionType(e.target.value as QuestionType)}
                   >
@@ -223,10 +222,10 @@ export default function CreateQuizPage() {
               </div>
 
               {/* AI Section */}
-              <div className="space-y-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                <div className="flex justify-between items-center">
-                  <Label className="text-blue-800 dark:text-blue-300 font-semibold">{t.aiAssistant}</Label>
-                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-md border dark:border-gray-700">
+              <div className={`${styles.panel} ${styles.section}`}>
+                <div className={styles.row}>
+                  <Label>{t.aiAssistant}</Label>
+                  <div className={styles.row}>
                     <button
                       type="button"
                       onClick={() => setGenerateMode('single')}
@@ -249,12 +248,11 @@ export default function CreateQuizPage() {
                     ? 'Generates one question focused on the topic.' 
                     : 'Generates 5 distinct questions to create a full quiz.'}
                 </p>
-                <div className="flex gap-2">
+                <div className={styles.row}>
                   <Input
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder={t.topicPlaceholder}
-                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                   />
                   <Button 
                     type="button" 
@@ -361,14 +359,14 @@ export default function CreateQuizPage() {
             </div>
 
             {/* Questions List */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg dark:text-gray-100">{t.questions} ({questions.length})</h3>
+            <div className={styles.section}>
+              <h3>{t.questions} ({questions.length})</h3>
               {questions.length === 0 ? (
-                <p className="text-sm text-gray-500 italic dark:text-gray-400">{t.noQuestions}</p>
+                <p>{t.noQuestions}</p>
               ) : (
-                <div className="space-y-3">
+                <div className={styles.questions}>
                   {questions.map((q, idx) => (
-                    <div key={idx} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 relative group">
+                    <div key={idx} className={`${styles.questionItem} group`}>
                       <div className="pr-8">
                         <div className="flex justify-between items-start mb-2">
                           <span className="text-xs font-bold uppercase bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-gray-700 dark:text-gray-300">
@@ -407,7 +405,7 @@ export default function CreateQuizPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full text-lg py-6" disabled={loading}>
+            <Button type="submit" className={styles.submit} disabled={loading}>
               {loading ? t.creating : t.createQuizBtn}
             </Button>
           </form>

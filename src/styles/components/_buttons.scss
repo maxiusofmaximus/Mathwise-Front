@@ -1,0 +1,3 @@
+@use "../abstracts/mixins" as *;
+
+button[data-slot="button"] { @include focus-ring; }

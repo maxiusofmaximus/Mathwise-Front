@@ -1,0 +1,42 @@
+@use "abstracts/variables" as *;
+
+$primary: $color-primary;
+$secondary: $color-secondary;
+$body-bg: $color-background;
+$body-color: $color-text;
+$border-radius: $radius-sm;
+$input-border-radius: $radius-sm;
+
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+@import "abstracts/functions";
+@import "abstracts/mixins";
+@import "base/reset";
+@import "base/typography";
+@import "base/base";
+@import "layout/header";
+@import "layout/footer";
+@import "layout/grid";
+@import "components/buttons";
+@import "components/cards";
+@import "components/forms";
+@import "components/notifications";
+@import "pages/dashboard";
+@import "pages/login";
+@import "pages/quiz";
+@import "themes/light";
+@import "themes/dark";
+
+.motion-reduce *, .motion-reduce *::before, .motion-reduce *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.high-contrast {
+  --border-color: #000000;
+
+  .dark & {
+    --border-color: #ffffff;
+  }
+}

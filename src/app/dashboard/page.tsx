@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguageStore } from '@/store/language';
 import { translations } from '@/lib/translations';
 import api from '@/lib/api';
+import styles from './Dashboard.module.scss';
 
 interface Quiz {
   id: string;
@@ -25,7 +26,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login');
+      api.get('/auth/profile')
+        .then((res) => useAuthStore.getState().login(res.data.user))
+        .catch(() => router.push('/login'));
       return;
     }
 
@@ -39,40 +42,40 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 p-8 text-gray-900 dark:text-gray-100">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <h1>
           {t.welcome}, {user.name} ({user.role})
         </h1>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className={styles.grid}>
         {user.role === 'editor' ? (
           <>
-            <div className="rounded-lg bg-white dark:bg-gray-900 p-6 shadow dark:border dark:border-gray-800">
-              <h2 className="mb-4 text-xl font-semibold">{t.createQuiz}</h2>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <div className={styles.panel}>
+              <h2>{t.createQuiz}</h2>
+              <p>
                 {t.createQuizDesc}
               </p>
               <Button onClick={() => router.push('/editor/new')}>{t.goToEditor}</Button>
             </div>
-            <div className="rounded-lg bg-white dark:bg-gray-900 p-6 shadow dark:border dark:border-gray-800">
-              <h2 className="mb-4 text-xl font-semibold">{t.analytics}</h2>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">{t.analyticsDesc}</p>
+            <div className={styles.panel}>
+              <h2>{t.analytics}</h2>
+              <p>{t.analyticsDesc}</p>
               <Button variant="secondary">{t.viewAnalytics}</Button>
             </div>
             
-            <div className="rounded-lg bg-white dark:bg-gray-900 p-6 shadow dark:border dark:border-gray-800 col-span-full md:col-span-2 lg:col-span-3">
-              <h2 className="mb-4 text-xl font-semibold">{t.myQuizzes}</h2>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">{t.myQuizzesDesc}</p>
+            <div className={`${styles.panel} ${styles.panelWide}`}>
+              <h2>{t.myQuizzes}</h2>
+              <p>{t.myQuizzesDesc}</p>
               
-              <div className="space-y-4">
+              <div className={styles.quizList}>
                   {myQuizzes.map(quiz => (
-                      <div key={quiz.id} className="flex items-center justify-between p-4 border rounded dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                      <div key={quiz.id} className={styles.quizListItem}>
                           <div>
-                              <h3 className="font-bold text-lg">{quiz.title}</h3>
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{quiz.description}</p>
-                              <div className="flex gap-4 text-xs text-gray-400">
+                              <h3>{quiz.title}</h3>
+                              <p>{quiz.description}</p>
+                              <div className={styles.meta}>
                                 <span>Questions: {quiz._count?.questions || 0}</span>
                                 <span>Attempts: {quiz._count?.attempts || 0}</span>
                               </div>
@@ -80,20 +83,20 @@ export default function DashboardPage() {
                           <Button variant="outline" onClick={() => router.push(`/editor/${quiz.id}`)}>{t.edit}</Button>
                       </div>
                   ))}
-                  {myQuizzes.length === 0 && <p className="text-sm italic text-gray-500">No quizzes created yet.</p>}
+                  {myQuizzes.length === 0 && <p>No quizzes created yet.</p>}
               </div>
             </div>
           </>
         ) : (
           <>
-            <div className="rounded-lg bg-white dark:bg-gray-900 p-6 shadow dark:border dark:border-gray-800">
-              <h2 className="mb-4 text-xl font-semibold">{t.availableQuizzes}</h2>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">{t.availableQuizzesDesc}</p>
+            <div className={styles.panel}>
+              <h2>{t.availableQuizzes}</h2>
+              <p>{t.availableQuizzesDesc}</p>
               <Button onClick={() => router.push('/quiz/browse')}>{t.browseQuizzes}</Button>
             </div>
-            <div className="rounded-lg bg-white dark:bg-gray-900 p-6 shadow dark:border dark:border-gray-800">
-              <h2 className="mb-4 text-xl font-semibold">{t.myHistory}</h2>
-              <p className="mb-4 text-gray-600 dark:text-gray-400">{t.myHistoryDesc}</p>
+            <div className={styles.panel}>
+              <h2>{t.myHistory}</h2>
+              <p>{t.myHistoryDesc}</p>
               <Button variant="secondary">{t.viewHistory}</Button>
             </div>
           </>

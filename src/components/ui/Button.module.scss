@@ -1,0 +1,6 @@
+.root {
+  &:focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--primary-color) 35%, transparent);
+    outline-offset: 2px;
+  }
+}

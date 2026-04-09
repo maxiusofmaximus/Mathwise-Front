@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { notify } from '@/lib/notify';
 import { useLanguageStore } from "@/store/language";
 import { translations } from "@/lib/translations";
+import styles from './QuizBrowse.module.scss';
 
 export default function BrowseQuizzesPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function BrowseQuizzesPage() {
       setQuizzes(response.data);
     } catch (error) {
       console.error(error);
-      toast.error(commonT.error);
+      notify.error(commonT.error);
     } finally {
       setLoading(false);
     }
@@ -39,31 +40,31 @@ export default function BrowseQuizzesPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen dark:bg-gray-950 dark:text-gray-100">{commonT.loading}</div>;
+    return <div className={`${styles.page} ${styles.loading}`}>{commonT.loading}</div>;
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 p-8">
-      <h1 className="text-3xl font-bold mb-8 dark:text-gray-100">{t.availableTitle}</h1>
+    <div className={styles.page}>
+      <h1 className={styles.title}>{t.availableTitle}</h1>
       
       {quizzes.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400 text-center text-lg">{t.noQuizzes}</p>
+        <p>{t.noQuizzes}</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className={styles.grid}>
           {quizzes.map((quiz) => (
-            <Card key={quiz.id} className="hover:shadow-lg transition-shadow dark:bg-gray-900 dark:border-gray-800">
+            <Card key={quiz.id}>
               <CardHeader>
-                <CardTitle className="dark:text-gray-100">{quiz.title}</CardTitle>
+                <CardTitle>{quiz.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">{quiz.description || "No description provided."}</p>
+                <p>{quiz.description || "No description provided."}</p>
                 {quiz.end_at && (
-                  <p className="text-xs text-red-500 mb-2 font-medium">
+                  <p className={styles.deadline}>
                     Deadline: {new Date(quiz.end_at).toLocaleString()}
                   </p>
                 )}
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded">
+                <div className={styles.cardActions}>
+                  <span className={styles.levelBadge}>
                     {quiz.difficulty || "Medium"}
                   </span>
                   <Button onClick={() => handleTakeQuiz(quiz.id)}>{t.takeQuiz}</Button>

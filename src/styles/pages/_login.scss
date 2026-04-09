@@ -1,0 +1,11 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+
+  &__card { width: min(100%, 28rem); }
+  &__form { display: grid; gap: 1rem; }
+  &__actions { text-align: center; }
+}

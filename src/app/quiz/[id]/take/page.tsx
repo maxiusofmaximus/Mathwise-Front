@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { notify } from '@/lib/notify';
 import { useLanguageStore } from "@/store/language";
 import { translations } from "@/lib/translations";
+import styles from "./QuizTake.module.scss";
 
 export default function TakeQuizPage() {
   const params = useParams();
@@ -62,7 +63,7 @@ export default function TakeQuizPage() {
       
     } catch (error) {
       console.error(error);
-      toast.error(commonT.error);
+      notify.error(commonT.error);
     } finally {
       setLoading(false);
     }
@@ -70,7 +71,7 @@ export default function TakeQuizPage() {
 
   const handleAutoSubmit = () => {
     if (submitting) return;
-    toast.info("Time's up! Submitting automatically...");
+    notify.info("Time's up! Submitting automatically...");
     handleSubmit();
   };
 
@@ -92,7 +93,7 @@ export default function TakeQuizPage() {
 
     const unanswered = quiz.questions.some((q: any) => !answers[q.id]);
     if (unanswered) {
-      toast.warning("Please answer all questions before submitting."); // Could be translated too
+      notify.warning("Please answer all questions before submitting."); // Could be translated too
       return;
     }
 
@@ -106,50 +107,48 @@ export default function TakeQuizPage() {
          }))
       });
 
-      toast.success(commonT.success);
+      notify.success(commonT.success);
       router.push(`/quiz/${quizId}/result?attemptId=${response.data.attemptId || 'new'}`);
     } catch (error) {
       console.error(error);
-      toast.error(commonT.error);
+      notify.error(commonT.error);
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return <div className="flex justify-center items-center min-h-screen dark:bg-gray-950 dark:text-gray-100">{commonT.loading}</div>;
-  if (!quiz) return <div className="flex justify-center items-center min-h-screen dark:bg-gray-950 dark:text-gray-100">Quiz not found</div>;
+  if (loading) return <div className={styles.page}>{commonT.loading}</div>;
+  if (!quiz) return <div className={styles.page}>Quiz not found</div>;
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 p-8 items-center">
+    <div className={styles.page}>
       
       {/* Timer Header */}
-      <div className={`fixed top-4 right-4 z-50 px-4 py-2 rounded-full font-mono font-bold text-xl shadow-lg ${
-        (timeLeft || 0) < 60 ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400'
-      }`}>
+      <div className={`${styles.timer} ${(timeLeft || 0) < 60 ? styles.timerDanger : ""}`}>
         {timeLeft !== null ? formatTime(timeLeft) : '--:--'}
       </div>
 
-      <div className="w-full max-w-3xl space-y-6 pt-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold dark:text-gray-100">{quiz.title}</h1>
-          <p className="text-gray-600 dark:text-gray-400">{quiz.description}</p>
+      <div className={styles.shell}>
+        <div className={styles.header}>
+          <h1>{quiz.title}</h1>
+          <p>{quiz.description}</p>
         </div>
 
         {quiz.questions.map((question: any, index: number) => (
-          <Card key={question.id} className="dark:bg-gray-900 dark:border-gray-800">
+          <Card key={question.id}>
             <CardHeader>
-              <CardTitle className="text-lg dark:text-gray-200">{commonT.language === 'Idioma' ? 'Pregunta' : 'Question'} {index + 1}</CardTitle>
+              <CardTitle>{language === "es" ? "Pregunta" : "Question"} {index + 1}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="font-medium text-gray-800 dark:text-gray-300">{question.content}</p>
+            <CardContent className={styles.questionBody}>
+              <p>{question.content}</p>
               
-              <div className="space-y-2">
-                <Label htmlFor={question.id} className="dark:text-gray-400 mb-2 block">{t.yourAnswer}</Label>
+              <div>
+                <Label htmlFor={question.id}>{t.yourAnswer}</Label>
                 
                 {question.type === 'multiple_choice' && question.options ? (
-                  <div className="space-y-3">
+                  <div className={styles.options}>
                     {question.options.map((option: string, idx: number) => (
-                      <div key={idx} className="flex items-center space-x-2 p-3 rounded-md border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onClick={() => handleAnswerChange(question.id, option)}>
+                      <div key={idx} className={styles.optionItem} onClick={() => handleAnswerChange(question.id, option)}>
                         <input
                           type="radio"
                           id={`${question.id}-${idx}`}
@@ -157,25 +156,22 @@ export default function TakeQuizPage() {
                           value={option}
                           checked={answers[question.id] === option}
                           onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         />
-                        <Label htmlFor={`${question.id}-${idx}`} className="dark:text-gray-300 cursor-pointer flex-grow">{option}</Label>
+                        <Label htmlFor={`${question.id}-${idx}`}>{option}</Label>
                       </div>
                     ))}
                   </div>
                 ) : question.type === 'true_false' ? (
-                  <div className="flex gap-4">
+                  <div className={styles.options}>
                     <Button
                       variant={answers[question.id] === 'True' ? "default" : "outline"}
                       onClick={() => handleAnswerChange(question.id, 'True')}
-                      className="flex-1 dark:text-gray-100 dark:border-gray-600"
                     >
                       True
                     </Button>
                     <Button
                       variant={answers[question.id] === 'False' ? "default" : "outline"}
                       onClick={() => handleAnswerChange(question.id, 'False')}
-                      className="flex-1 dark:text-gray-100 dark:border-gray-600"
                     >
                       False
                     </Button>
@@ -186,7 +182,6 @@ export default function TakeQuizPage() {
                     placeholder={t.answerPlaceholder}
                     value={answers[question.id] || ""}
                     onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                   />
                 )}
               </div>
@@ -194,8 +189,7 @@ export default function TakeQuizPage() {
           </Card>
         ))}
 
-        <Button 
-          className="w-full text-lg py-6" 
+        <Button
           onClick={handleSubmit}
           disabled={submitting}
         >

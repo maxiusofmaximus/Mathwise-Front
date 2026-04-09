@@ -1,0 +1,18 @@
+.sileo-toaster {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2000;
+  max-width: 26rem;
+
+  .alert {
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  }
+
+  .alert-success { border-color: color-mix(in oklab, var(--success-color) 35%, transparent); }
+  .alert-danger { border-color: color-mix(in oklab, var(--error-color) 35%, transparent); }
+  .alert-warning { border-color: color-mix(in oklab, var(--warning-color) 35%, transparent); }
+  .alert-info { border-color: color-mix(in oklab, var(--primary-color) 35%, transparent); }
+}

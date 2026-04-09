@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
+import { notify } from '@/lib/notify';
 import { useLanguageStore } from "@/store/language";
 import { translations } from "@/lib/translations";
 import { Plus, Trash2, ArrowLeft } from "lucide-react";
@@ -122,7 +122,7 @@ export default function EditQuizPage() {
         setQuestions(parsedQuestions);
       } catch (error) {
         console.error(error);
-        toast.error(commonT.error);
+        notify.error(commonT.error);
         // router.push('/dashboard'); // Commented out to debug if needed
       } finally {
         setFetching(false);
@@ -136,7 +136,7 @@ export default function EditQuizPage() {
 
   const handleAddManual = () => {
     if (!manualContent) {
-      toast.error("Question content is required");
+      notify.error("Question content is required");
       return;
     }
 
@@ -148,13 +148,13 @@ export default function EditQuizPage() {
 
     if (questionType === 'open') {
       if (!manualAnswer) {
-        toast.error("Expected answer is required");
+        notify.error("Expected answer is required");
         return;
       }
       newQuestion.expected_answer = manualAnswer;
     } else if (questionType === 'multiple_choice') {
       if (manualOptions.some(opt => !opt)) {
-        toast.error("All 4 options are required");
+        notify.error("All 4 options are required");
         return;
       }
       newQuestion.options = [...manualOptions];
@@ -174,7 +174,7 @@ export default function EditQuizPage() {
     setManualAnswer("");
     setManualOptions(['', '', '', '']);
     setManualCorrectOption(0);
-    toast.success(t.addQuestion);
+    notify.success(t.addQuestion);
   };
 
   const removeQuestion = (idx: number) => {
@@ -186,7 +186,7 @@ export default function EditQuizPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || questions.length === 0) {
-      toast.error(commonT.error);
+      notify.error(commonT.error);
       return;
     }
 
@@ -205,11 +205,11 @@ export default function EditQuizPage() {
         allowed_students: assignToAll ? [] : selectedStudents,
         allowed_groups: assignToAll ? [] : selectedGroups
       });
-      toast.success(commonT.success);
+      notify.success(commonT.success);
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error(commonT.error);
+      notify.error(commonT.error);
     } finally {
       setLoading(false);
     }

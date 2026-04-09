@@ -1,0 +1,59 @@
+$color-primary: #2563eb;
+$color-secondary: #14b8a6;
+$color-background: #f4f7fb;
+$color-surface: #ffffff;
+$color-text: #111827;
+$color-success: #16a34a;
+$color-warning: #d97706;
+$color-error: #dc2626;
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 16px;
+$space-4: 24px;
+$space-5: 32px;
+
+$font-family-base: "Inter", "Segoe UI", sans-serif;
+$font-size-h1: clamp(2rem, 3vw, 2.75rem);
+$font-size-h2: clamp(1.5rem, 2.3vw, 2rem);
+$font-size-h3: 1.25rem;
+$font-size-body: 1rem;
+$font-size-caption: 0.875rem;
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 18px;
+
+$shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.06);
+$shadow-md: 0 12px 24px rgba(15, 23, 42, 0.1);
+
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1400px;
+
+$theme-light: (
+  background: #f4f7fb,
+  surface: #ffffff,
+  text: #111827,
+  muted: #6b7280,
+  border: #d8e0eb,
+  primary: #2563eb,
+  primary-contrast: #ffffff,
+  success: #16a34a,
+  warning: #d97706,
+  error: #dc2626
+);
+
+$theme-dark: (
+  background: #0f172a,
+  surface: #111c31,
+  text: #f3f4f6,
+  muted: #9ca3af,
+  border: #2c3a55,
+  primary: #60a5fa,
+  primary-contrast: #0f172a,
+  success: #4ade80,
+  warning: #fbbf24,
+  error: #f87171
+);
